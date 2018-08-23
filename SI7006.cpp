@@ -1,18 +1,15 @@
 /**************************************************************************/
 /*!
-@file     Adafruit_TCS34725.cpp
-@author   KTOWN (Adafruit Industries)
+@file     SI7006.cpp
+@author   Austin Rhodes
 @license  BSD (see license.txt)
 
-Driver for the TCS34725 digital color sensors.
-
-Adafruit invests time and resources providing this open source code,
-please support Adafruit and open-source hardware by purchasing
-products from Adafruit!
+Driver for the SI7006 digital temperature humidity sensor.
 
 @section  HISTORY
 
 v1.0 - First release
+v1.1 - Update begin function to accept alternate pins
 */
 /**************************************************************************/
 #ifdef __AVR
@@ -32,9 +29,13 @@ Si7006::Si7006(void) {
   // Si7006 object
 }
 
-boolean Si7006::begin(void)
+boolean Si7006::begin(int SDA = -1, int SCL = -1)
 {
-  Wire.begin();
+  if (SDA == -1 || SCL == -1){
+    Wire.begin();
+  }else{
+    Wire.begin(SDA, SCL);
+  }
   Wire.beginTransmission(Si7006_ADDRESS);
   if(Wire.endTransmission()){
     return false;
