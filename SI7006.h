@@ -22,7 +22,7 @@
 class Si7006 {
 	public:
 		Si7006(void);
-		boolean begin(void);
+		boolean begin(int SDA = -1, int SCL = -1);
     boolean getTempHumidity(float &humidity, float &temperature);
 
 	private:

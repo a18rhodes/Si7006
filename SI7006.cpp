@@ -29,7 +29,7 @@ Si7006::Si7006(void) {
   // Si7006 object
 }
 
-boolean Si7006::begin(int SDA = -1, int SCL = -1)
+boolean Si7006::begin(int SDA, int SCL)
 {
   if (SDA == -1 || SCL == -1){
     Wire.begin();
