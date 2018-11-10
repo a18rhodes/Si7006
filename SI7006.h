@@ -17,13 +17,18 @@
 #define Si7006_MEAS_TEMP_NO_MASTER_MODE         0xF3
 #define Si7006_READ_OLD_TEMP                    0xE0
 #define Si7006_RESET                            0xFE
+#define Si7006_READ_ID_LOW_0					0xFA
+#define Si7006_READ_ID_LOW_1					0x0F
+#define Si7006_READ_ID_HIGH_0					0xFC
+#define Si7006_READ_ID_HIGH_1					0xC9
 
 
 class Si7006 {
 	public:
 		Si7006(void);
 		boolean begin(int SDA = -1, int SCL = -1);
-    boolean getTempHumidity(float &humidity, float &temperature);
+    	boolean getTempHumidity(float &humidity, float &temperature);
+		boolean getID(char (&deviceID)[8]);
 
 	private:
 		boolean _Si7006Initialised;

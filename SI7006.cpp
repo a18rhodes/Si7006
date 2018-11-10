@@ -46,6 +46,37 @@ boolean Si7006::begin(int SDA, int SCL)
 }
 
 
+boolean Si7006::getID(char (&deviceID)[8]){
+  byte high, low;
+  for(uint i = 0; i < sizeof(deviceID); i++){
+    deviceID[i] = 0;
+  }
+  Wire.beginTransmission(Si7006_ADDRESS);
+  Wire.write(Si7006_READ_ID_HIGH_0);
+  Wire.write(Si7006_READ_ID_HIGH_1);
+  if (Wire.endTransmission()) return false;
+  delay(100);
+  Wire.requestFrom(Si7006_ADDRESS, 4);
+  deviceID[7] |= Wire.read();
+  deviceID[6] |= Wire.read();
+  deviceID[5] |= Wire.read();
+  deviceID[4] |= Wire.read();
+  
+  Wire.beginTransmission(Si7006_ADDRESS);
+  Wire.write(Si7006_READ_ID_LOW_0);
+  Wire.write(Si7006_READ_ID_LOW_1);
+  if (Wire.endTransmission()) return false;
+  delay(100);
+  Wire.requestFrom(Si7006_ADDRESS, 4);
+  deviceID[3] |= Wire.read();
+  deviceID[2] |= Wire.read();
+  deviceID[1] |= Wire.read();
+  deviceID[0] |= Wire.read();
+
+  return true;
+
+}
+
 boolean Si7006::getTempHumidity(float &humidity, float &temperature){
   byte high, low;
   unsigned int value;
