@@ -27,6 +27,8 @@ class Si7006 {
 	public:
 		Si7006(void);
 		boolean begin(int SDA = -1, int SCL = -1);
+		boolean getTemperature(float &temperature, uint8_t readOld);
+		boolean getHumidity(float &humidity);
     	boolean getTempHumidity(float &humidity, float &temperature);
 		boolean getID(char (&deviceID)[8]);
 

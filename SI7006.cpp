@@ -77,7 +77,32 @@ boolean Si7006::getID(char (&deviceID)[8]){
 
 }
 
-boolean Si7006::getTempHumidity(float &humidity, float &temperature){
+boolean Si7006::getTemperature(float &temperature, uint8_t readOld){
+  byte high, low;
+  unsigned int value;
+  Wire.beginTransmission(Si7006_ADDRESS);
+  if (readOld){
+    Wire.write(Si7006_READ_OLD_TEMP);
+  }else{
+    Wire.write(Si7006_MEAS_TEMP_NO_MASTER_MODE);
+  }
+  if (Wire.endTransmission()) return false;
+  delay(100);
+  Wire.requestFrom(Si7006_ADDRESS, 2);
+  high = Wire.read();
+  low = Wire.read();
+  value = (high << 8) | low;
+  // A temperature measurement will always return XXXXXX00 in the LSB field.
+  if (value & 0xFFFC) {
+    temperature = (172.72 * (float)value) / 65536 - 46.85;
+  } else {
+    Serial.println("Error on temp");
+    return 1;
+  }
+  return 0;
+}
+
+boolean Si7006::getHumidity(float &humidity){
   byte high, low;
   unsigned int value;
   Wire.beginTransmission(Si7006_ADDRESS);
@@ -94,19 +119,10 @@ boolean Si7006::getTempHumidity(float &humidity, float &temperature){
   } else {
     return false;
   }
+}
+
+boolean Si7006::getTempHumidity(float &humidity, float &temperature){
+  getHumidity(humidity);
   //onto the temperature.
-  Wire.beginTransmission(Si7006_ADDRESS);
-  Wire.write(Si7006_READ_OLD_TEMP);
-  if (Wire.endTransmission()) return false;
-  delay(100);
-  Wire.requestFrom(Si7006_ADDRESS, 2);
-  high = Wire.read();
-  low = Wire.read();
-  value = (high << 8) | low;
-  // A temperature measurement will always return XXXXXX00 in the LSB field.
-  if (value & 0xFFFC) {
-    temperature = (172.72 * (float)value) / 65536 - 46.85;
-  } else {
-    Serial.println("Error on temp");
-  }
+  getTemperature(temperature, 1);
 }
